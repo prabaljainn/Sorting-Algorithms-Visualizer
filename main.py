@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import random
 from colors import *
 
@@ -12,19 +12,19 @@ from algorithms.quickSort import quick_sort
 from algorithms.heapSort import heap_sort
 from algorithms.countingSort import counting_sort
 
-
-# Main window 
+# Main window
 window = Tk()
 window.title("Sorting Algorithms Visualization")
-# window.maxsize(1000, 700)
-window.config(bg = WHITE)
-window.attributes("-fullscreen", True)
+window.maxsize(1000, 1100)
+window.config(bg=WHITE)
+# window.attributes("-fullscreen", True)
 
 
 algorithm_name = StringVar()
 speed_name = StringVar()
 data = []
-algo_list = ['Bubble Sort', 'Insertion Sort', 'Selection Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort', 'Counting Sort']
+algo_list = ['Selection Sort', 'Insertion Sort', 'Bubble Sort', 'Merge Sort', 'Quick Sort', 'Heap Sort',
+             'Counting Sort']
 speed_list = ['Fast', 'Medium', 'Slow']
 
 
@@ -48,16 +48,25 @@ def drawData(data, colorArray):
     window.update_idletasks()
 
 
+val = 100
+
+
 # Randomly generate array
 def generate():
     global data
-
+    global val
     data = []
-    for i in range(0, 50):
+    for i in range(0, val):
         random_value = random.randint(1, 150)
         data.append(random_value)
 
     drawData(data, [BLUE for x in range(len(data))])
+
+
+def setLimit(value):
+    global val
+    val = value
+    generate()
 
 
 def set_speed():
@@ -72,7 +81,7 @@ def set_speed():
 def sort():
     global data
     timeTick = set_speed()
-    
+
     if algo_menu.get() == 'Bubble Sort':
         bubble_sort(data, drawData, timeTick)
     elif algo_menu.get() == 'Selection Sort':
@@ -80,17 +89,22 @@ def sort():
     elif algo_menu.get() == 'Insertion Sort':
         insertion_sort(data, drawData, timeTick)
     elif algo_menu.get() == 'Merge Sort':
-        merge_sort(data, 0, len(data)-1, drawData, timeTick)
+        merge_sort(data, 0, len(data) - 1, drawData, timeTick)
     elif algo_menu.get() == 'Quick Sort':
-        quick_sort(data, 0, len(data)-1, drawData, timeTick)
+        quick_sort(data, 0, len(data) - 1, drawData, timeTick)
     elif algo_menu.get() == 'Heap Sort':
         heap_sort(data, drawData, timeTick)
     else:
         counting_sort(data, drawData, timeTick)
 
 
+def endFunc():
+    messagebox.showinfo('Sorting Algo Visualizer', 'https://github.com/prabaljainn/Sorting-Algorithms-Visualizer')
+    window.destroy()
+
+
 ### User interface ###
-UI_frame = Frame(window, width= 900, height=300, bg=WHITE)
+UI_frame = Frame(window, width=900, height=300, bg=WHITE)
 UI_frame.grid(row=0, column=0, padx=10, pady=5)
 
 l1 = Label(UI_frame, text="Algorithm: ", bg=WHITE)
@@ -108,13 +122,22 @@ speed_menu.current(0)
 canvas = Canvas(window, width=800, height=400, bg=WHITE)
 canvas.grid(row=1, column=0, padx=10, pady=5)
 
-b1 = Button(UI_frame, text="Sort", command=sort, bg=LIGHT_GRAY)
+b1 = Button(UI_frame, text="     Sort     ", command=sort, bg=LIGHT_GRAY)
 b1.grid(row=2, column=1, padx=5, pady=5)
 
-b3 = Button(UI_frame, text="Generate Array", command=generate, bg=LIGHT_GRAY)
+b3 = Button(UI_frame, text="   Generate Array   ", command=generate, bg=LIGHT_GRAY)
 b3.grid(row=2, column=0, padx=5, pady=5)
 
-b4 = Button(UI_frame, text="Quit", command=window.destroy, bg=LIGHT_GRAY)
-b4.grid(row=2, column=3, padx=5, pady=5)
+b4 = Button(UI_frame, text="       Quit       ", command=lambda: endFunc(), bg=LIGHT_GRAY)
+b4.grid(row=2, column=2, padx=5, pady=5)
+
+b5 = Button(UI_frame, text="   100   ", command=lambda: setLimit(100), bg=LIGHT_GRAY)
+b5.grid(row=3, column=0, padx=5, pady=5)
+
+b6 = Button(UI_frame, text="   150   ", command=lambda: setLimit(150), bg=LIGHT_GRAY)
+b6.grid(row=3, column=1, padx=5, pady=5)
+
+b7 = Button(UI_frame, text="   200   ", command=lambda: setLimit(200), bg=LIGHT_GRAY)
+b7.grid(row=3, column=2, padx=5, pady=5)
 
 window.mainloop()
